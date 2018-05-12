@@ -91,12 +91,6 @@ where
 ### Accuracy and recall
 To calculate accuracy and recall a convention should be introduced. Let 'sell' be negative and 'buy' be positive. Then if 'sell' is profitable then it is true negative. If 'sell' is not profitable then it is false negative. If 'buy' is profitable then it is true positive. If 'buy' is not profitable then it is false positive. Profitability of the action will be calculated on period between a given action and the next one. Having these values a confusion matrix will be built so accuracy and recall will be calculated. These statistical measurements provide additional performance assessment of the system and should be used to estimate classification performance gains or losses caused by changes in algorithms.
 
-## Welcome to GitHub Pages
-
-You can use the [editor on GitHub](https://github.com/fink-stanislav/AutomaticTradingSystem/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
 {% for js in page.customjs %}
 <script async type="text/javascript" src="{{ js }}"></script>
 {% endfor %}
