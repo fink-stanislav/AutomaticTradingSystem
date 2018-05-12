@@ -92,3 +92,7 @@ To calculate accuracy and recall a convention should be introduced. Let 'sell' b
 You can use the [editor on GitHub](https://github.com/fink-stanislav/AutomaticTradingSystem/edit/master/index.md) to maintain and preview the content for your website in Markdown files.
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+
+{% for js in page.customjs %}
+<script async type="text/javascript" src="{{ js }}"></script>
+{% endfor %}
