@@ -8,6 +8,21 @@
 });
 </script>
 
+[fig1]: price.png
+[fig2]: rsi-mfi_medium.png
+[fig3]: ppo_medium.png
+[fig4]: nn.png
+[fig5]: profits.png
+[fig7]: d_sin_medium.png
+[fig8]: q_sin_medium.png
+[fig9]: bh_medium.png
+[fig10]: demo_profitabilities_medium.png
+
+[fig6]: d_7200.png
+[fig6]: q_7200.png
+[fig6]: r.png
+
+
 # I. Definition
 
 ## Project Overview
@@ -132,3 +147,5 @@ The data is of high quality and does not need to be cleaned up, however it is no
 
 ## Exploratory Visualization
 Solution of the problem requires time series price and volume data to be analyzed. Example of price data displayed on Fig. 1. This data depend on many uncontrollable factors such as market manipulations, news, investors' interest and probably some more. Knowing that it is impossible to make a reliable prediction of price movement in the long term (e.g. months). However short terms predictions based on technical indicators may work sometimes.
+
+![Fig. 1. Price data example][fig1]
