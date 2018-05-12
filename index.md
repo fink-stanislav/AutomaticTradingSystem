@@ -82,10 +82,10 @@ Price of holdings for this particular project should be nominated in Bitcoin (BT
 
 $$ P = p_0 p_n \cdot 100 $$
 
-\(p_0\)
+$p_0$
 
 where
- - \(p_0\) is a price of holdings in Bitcoin at the start of training period
+ - $p_0$ is a price of holdings in Bitcoin at the start of training period
  - \(p_n\) is a price of holdings in Bitcoin at the end of training period
 
 ### Accuracy and recall
