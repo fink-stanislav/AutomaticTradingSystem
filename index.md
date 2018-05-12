@@ -164,3 +164,5 @@ Figure 2. RSI and MFI. Oversold zone is below, overbought zone is above. These i
 Figure 3. PPO chart. Histogram is a difference between PPO line and signal line. Histogram changes sign when signal line goes above (positive) or below (negative) PPO line.
 
 These indicators are basic but they are very useful. There are a plenty of other indicators but their considering is out of scope of this project.
+
+*To be continued...*
