@@ -2,6 +2,3 @@ theme: jekyll-theme-cayman
 markdown: kramdown
 title: Automatic Trading System
 description: "Some meaningful description"
-
-cdn:
-  mathjax: https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
