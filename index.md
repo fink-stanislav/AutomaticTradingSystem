@@ -1,3 +1,5 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+
 $$ M = \left( \begin{array}{ccc} x_{11} & x_{12} & \ldots \ x_{21} & x_{22} & \ldots \ \vdots & \vdots & \ldots \ \end{array} \right) $$
 
 $$ P = p_0 p_n \cdot 100 $$
