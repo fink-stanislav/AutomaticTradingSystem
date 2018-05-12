@@ -1,9 +1,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
-$$ M = \left( \begin{array}{ccc} x_{11} & x_{12} & \ldots \ x_{21} & x_{22} & \ldots \ \vdots & \vdots & \ldots \ \end{array} \right) $$
-
-$$ P = p_0 p_n \cdot 100 $$
-
 # I. Definition
 
 ## Project Overview
@@ -85,6 +81,8 @@ Profitability is a price difference between initial holdings of trader and his/h
 Price of holdings for this particular project should be nominated in Bitcoin (BTC). It is done because a market the system is trying to beat is nominated in BTC. Also Bitcoin has many years' uptrend and is the most widely acceptable and the most recognized cryptocurrency. System's profitability should be calculated as follows:
 
 $$ P = p_0 p_n \cdot 100 $$
+
+\(p_0\)
 
 where
  - \(p_0\) is a price of holdings in Bitcoin at the start of training period
