@@ -8,15 +8,15 @@
 });
 </script>
 
-[fig1]: price.png
-[fig2]: rsi-mfi_medium.png
-[fig3]: ppo_medium.png
-[fig4]: nn.png
-[fig5]: profits.png
-[fig7]: d_sin_medium.png
-[fig8]: q_sin_medium.png
-[fig9]: bh_medium.png
-[fig10]: demo_profitabilities_medium.png
+[fig1]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/price.png
+[fig2]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/rsi-mfi_medium.png
+[fig3]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/ppo_medium.png
+[fig4]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/nn.png
+[fig5]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/profits.png
+[fig7]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/d_sin_medium.png
+[fig8]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/q_sin_medium.png
+[fig9]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/bh_medium.png
+[fig10]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/demo_profitabilities_medium.png
 
 [fig6]: d_7200.png
 [fig6]: q_7200.png
