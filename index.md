@@ -8,6 +8,43 @@
 });
 </script>
 
+# Table of contents
+
+   * [I. Definition](#i-definition)
+      * [Project Overview](#project-overview)
+         * [Existing research](#existing-research)
+         * [Relevance](#relevance)
+         * [Datasets](#datasets)
+      * [Problem Statement](#problem-statement)
+         * [Problem structure](#problem-structure)
+         * [Feature selection](#feature-selection)
+            * [Creation of isolated environment](#creation-of-isolated-environment)
+            * [Baseline and primary learning algorithm implementation](#baseline-and-primary-learning-algorithm-implementation)
+            * [Learning process establishment](#learning-process-establishment)
+            * [Building an application](#building-an-application)
+      * [Metrics](#metrics)
+         * [Profitability](#profitability)
+         * [Accuracy and recall](#accuracy-and-recall)
+   * [II. Analysis](#ii-analysis)
+      * [Data Exploration](#data-exploration)
+      * [Exploratory Visualization](#exploratory-visualization)
+      * [Algorithms and Techniques](#algorithms-and-techniques)
+         * [Q-Learning](#q-learning)
+         * [Deep Q-Learning](#deep-q-learning)
+         * [Benchmark](#benchmark)
+   * [III. Methodology](#iii-methodology)
+      * [Data Preprocessing](#data-preprocessing)
+      * [Implementation](#implementation)
+   * [IV. Results](#iv-results)
+      * [Model Evaluation and Validation](#model-evaluation-and-validation)
+      * [Justification](#justification)
+      * [Demo results](#demo-results)
+   * [V. Conclusion](#v-conclusion)
+      * [Reflection](#reflection)
+      * [Improvement](#improvement)
+
+
+
 [fig1]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/price.png
 [fig2]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/rsi-mfi_medium.png
 [fig3]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/ppo_medium.png
