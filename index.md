@@ -43,30 +43,11 @@
          * [Q-Learning](#q-learning)
          * [Deep Q-Learning](#deep-q-learning)
          * [Benchmark](#benchmark)
-   * [III. Methodology](#iii-methodology)
-      * [Data Preprocessing](#data-preprocessing)
-      * [Implementation](#implementation)
-         * [Metrics](#metrics-1)
-         * [Abstractions](#abstractions)
-            * [Time](#time)
-            * [Environments](#environments)
-            * [Agents](#agents)
-            * [Learners](#learners)
-            * [Runners](#runners)
-            * [Classifier](#classifier)
-            * [Traders](#traders)
-         * [Services](#services)
-         * [Application](#application)
-      * [Refinement](#refinement)
-         * [Optimization](#optimization)
-            * [Removing random exploration](#removing-random-exploration)
-            * [Granting rewards](#granting-rewards)
-            * [Features calculation](#features-calculation)
-   * [IV. Results](#iv-results)
+   * [III. Results](#iv-results)
       * [Model Evaluation and Validation](#model-evaluation-and-validation)
       * [Justification](#justification)
       * [Demo results](#demo-results)
-   * [V. Conclusion](#v-conclusion)
+   * [IV. Conclusion](#v-conclusion)
       * [Reflection](#reflection)
       * [Improvement](#improvement)
 
@@ -254,126 +235,7 @@ To decide if project makes sense and one algorithm performs better than the othe
 
 Establishing the first baseline requires collecting data related to lending rates and loans demand. It should be collected by means of specially designed lending agent. The second baseline can be immediately calculated using historical data.
 
-# III. Methodology
-
-## Data Preprocessing
-
-As was stated above, raw datasets from exchange cannot be used for the proposed solution. To provide input features raw data should be converted to technical indicators - RSI, MFI, PPO.
-
-RSI and MFI can be represented by one value for each date. PPO consists of five values - exponential moving averages for 26 and 12 periods, histogram, signal line and PPO-line for each date. All five values are summarized by histogram so only histogram can be taken as a feature. Other four values used mostly for readability for humans.
-
-Obtained indicators are essentially percentages so can be easily normalized to fall in interval from zero to one. The normalization is required for proper functioning of neural network. While Deep Q-Learning algorithm is able to use normalized features as input, table based Q-Learning requires one more preprocessing step. All features are initially real numbers that are not suitable for Q-Learning due to inappropriate growth of table. That is why features should be rounded to some degree. As rounding to the nearest integer does not make sense here rounding to the nearest 0.05 is applied.
-
-After introducing rounding it turned out that normalized PPO value is too small to apply it. Practically PPO values do not overlap interval from -10 to 10 so normalization procedure for PPO was changed. It made PPO values 10 times larger and applicable to rounding.
-
-## Implementation
-
-During implementation of both algorithms features of the problem were thoroughly considered and reflected in code.
-
-### Metrics
-
-To calculate profitability that is main performance metric of the project `Estimator` class was introduced. Its procedure named `total_profitability` calculates profitability for a given period using states for the start of the period and the end of the period. States consist of price, base balance, and quote balance.
-
-### Abstractions
-
-Some abstractions were introduced to organize the code. While they have not the best names they make code more reusable and clean.
-
-#### Time
-Nearly all abstractions described below act periodically and in parallel. To demonstrate their work a decent amount of time is needed. That is why scaling of time was introduced. Number of seconds in one real second can be set in application configuration. In runtime all delays are calculated using this ratio. This approach helps to speed up the processes running in the application and see progress after reasonable amount of time. For reference see `model_time` module. According to configuration `model_time` module can be switched to real time scale seamlessly.
-
-#### Environments
-Two types of environments coexist in the project. The first environment residing in `environment` module is needed for learning. Its main feature is controllable state transition - it switches to the next state only if needed. When batch learning is running it executes all required learning actions and only after that switches environment to the next state. It guarantees that all states will be processed. The second environment is placed to `demo` module. It is an implementation of exchange client but with mocked order book and balances. While it provides similar functionality like emulating buys and sells, it is closer to real exchange and switches to the next state automatically after a given delay.
-
-#### Agents
-Implementations of both Q-Learning algorithms are represented as two classes in `agents` module. `QAgent` class contains a q-table in form of dictionary while `DeepQAgent` counterpart contains neural network instead. With all advantages of the neural network mentioned above, it is neither large nor complicated, see Fig. 4. It has two hidden layers of size 24 with RELU activation functions, three input neurons, and three output neurons. Curiously that larger and smaller networks performed worse.
-
-![Fig. 4. NN][fig4]
-
-*Figure 4. Neural network architecture*
-
-Main differences of these classes are in methods `learn` and `choose_action`. NN-based agent utilizes backward propagation in order to train its model while table-based one only checks if state is stored in table and updates it if it is and stores it if it is not.
-
-Every agent has metadata, in other words information about agent itself, and associated model. In context of agent a model is trained neural network for Deep Q-Learning and filled table for Q-Learning. This information is required to be stored in order to be reusable. However agents are not aware of how and where to store it because they should not be responsible for this. This work is delegated to other entities introduced below.
-
-#### Learners
-In order to encapsulate batch learning, online learning and grid search processes in some entity, `Learning` classes were introduced and resided in `learning` module. Online and batch learnings have algorithm specific implementations just because of additional preprocessing step required for Q-Learning. They can be merged into algorithm independent implementation but it requires additional time and efforts.
-
-Online and batch learnings are intended to train agents but they do it in different way. Online learning trains already existing agent that needs to be updated. It is expected that online learning performs one or several learning iterations, returns updated model and terminates.
-
-Batch learning in turn creates an agent from scratch, trains it, performs roll-forward cross validation and estimates profitability of newly created agent. Afterwards it returns the agent and some metadata useful for grid search. Trading data is essentially a time series so training data should not be ahead of testing data. So usual cross-validation technique is not applicable for batch learning. As an alternative a [roll-forward cross-validation](https://robjhyndman.com/hyndsight/tscv/) was used for algorithm assessment. It prevents look-ahead bias from occurring. According to roll-forward cross-validation approach testing occurs after every example is learned. Agent's method named emulate_action is responsible for that.
-
-Grid search also has algorithm specific implementations but they are trivial and needed only for convenient way of creating batch learnings. However they also could be merged after some code cleanup. Grid search tries to find an agent with maximal profitability by means of batch learning. Also it is able to estimate its own progress of doing that. In the application grid search is created for every currency pair with data snapshot for one year. Being rather trivial grid search implementation still has an open question about gamma parameter. This parameter is quite contradictory for this particular project because its values are hard to interpret. It turned out to be difficult to correlate results and these values. Possibly this parameter should be replaced by reward delay parameter but additional tests are needed to prove that.
-
-#### Runners
-Implemented Q-Learning algorithms require additional maintenance code. That maintenance code should provide the following functionality:
-
- - store and load metadata
- - store and load models
- - monitor runtime state
- - call learning procedure when needed
-
-For encapsulating this functionality `Runners` were introduced. There are runners for online learning and for grid search. Runners for online learning call learning procedure periodically while grid search runners call it only once. Internally runners for online learning (run runners) encapsulate a thread that executes learning procedure with given interval. Interval is equal to time period assigned to corresponding agent. Also run runners have a method that returns an action for a given state. Each agent has its own instance of runner.
-
-#### Classifier
-To unite agents and their runners and make them work as an unified system one more entity is needed. This entity serves as an interface for all classifications made by agents that is why it is called `Classifier`. Its responsibility includes the following:
-
- - starting and stopping required runners on demand
- - checking statuses of runners 
- - requesting classifications for current state of environment
-
-Only one instance of this class is required for proper work of the application. Instance of classifier is utilized by Agents Service described in Services section below.
-
-#### Traders
-Traders are the users of classifications provided by `Classifier`. Instance of Trader class from trading module is responsible for the following:
-
- - placing and canceling orders
- - requesting the latest classifications (or actions)
- - checking orders execution status periodically and replacing them if needed
-
-Just as runners and classifier traders encapsulate a thread that runs periodically. The thread is responsible for executing a procedure of placing or replacing orders according to retrieved action suggestion and order's execution status.
-
-Number of traders is not fixed, however for demonstration purposes only ten traders will be used. Five will use Q-Learning and another five will use Deep Q-Learning.
-
-To manage traders `TradersManager` class was introduced. It is able to request for status, and also start and stop traders. It stores all running traders inside a dictionary. `TradersManager` is an interface for all traders and it is used by traders service.
-
-### Services
-
-Agents and traders are essentially loosely coupled entities because they do not need each others' code. The only thing a traders needs from agents is a proposed action, while agents do not care of traders at all. This fact is a motivation for isolating these entities from each other but with possibility to interact. A widely accepted way of doing this is creating web services.
-
-Two web services were created - Agents Service and Traders Service. Agents Service analyzes a current state of exchange and suggests actions corresponding to that state. Traders Service requests these suggestions and performs trades.
-
-All interactions are made by means of HTTP requests and JSON. [Web.py](http://webpy.org/) framework used for all boilerplate code.
-
-### Application
-
-In order to use implemented software effectively and conveniently a GUI is required. Constructing a website is quick and flexible way to display required information and provide control over desired systems. Therefore a website with three pages was designed.
-
-Overview page shows profitability of all traders and helps to visually compare them to each other.
-
-Agents and Traders page shows names of all started agents and traders and short related metadata. From both pages links to Trader Details page are available.
-
-Trader Details page displays price chart with all trades made by trader and chart for price of trader's holdings. This page is parameterized by trader name. Current balances and order book are also shown. Order book however empties too quickly because of time scaling of demo. It is matter of seconds to execute an order so one who looks at demo could easily miss it.
-
-All pages use services described above to retrieve data. For creating the application [Flask](http://flask.pocoo.org) framework was selected for its minimalistic simplicity.
-
-For the purposes of this report the site is set up to show a demo version of working software. This approach intends to prove that problem is solved by showing all components working together with their performance measured by profitability and prove it in reasonable time. Currently the speed of demo is not very large. It is 200 times faster than real world and it is hard to speed it up more. Learning, checking, storing and other processes take time and need to be even more optimized.
-
-## Refinement
-
-### Optimization
-
-Minor algorithm optimizations were applied during implementation. They allowed to speed up the execution in several times.
-
-#### Removing random exploration
-Originally Q-Learning algorithm includes random exploration but as the number of possible actions is low it does not make sense to use it. So learning procedure executes all three actions independently and checks their results after reward delay is up. This helps to speed up learning process and improve results.
-
-#### Granting rewards
-Initially rewards granting process was different. Three actions were executed and learner switched to N states forth to estimate actions' results and then switched back to reward them. It was complicated and not optimal process, possibly introducing look-ahead bias. "Possibly" because classification performance was poor for some reason. Now switches back and forth are removed and environment only switches forth one time during one learning iteration.
-
-#### Features calculation
-It turned out that operations on series are faster than operations on dataframes. Module named `indicators` is a good illustration of that. Methods with postfix `df` are nearly four times slower than methods without postfix.
-
-# IV. Results
+# III. Results
 
 ## Model Evaluation and Validation
 
@@ -446,7 +308,7 @@ Results shown in demo also confirm better performance of Deep Q-Learning. To che
 
 As can be seen on Fig. 10 profitabilities are rather high but lower than profitabilities for training period. It is because of different length of periods. Training period is one year while demo period is three months.
 
-# V. Conclusion
+# IV. Conclusion
 
 ## Reflection
 
