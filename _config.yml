@@ -3,6 +3,5 @@ markdown: kramdown
 title: Automatic Trading System
 description: "Design principles, techniques, and approaches"
 
-customjs:
- - http://code.jquery.com/jquery-1.4.2.min.js
- - https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML
+github:
+  is_project_page: no
