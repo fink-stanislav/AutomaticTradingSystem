@@ -8,43 +8,6 @@
 });
 </script>
 
-# Table of contents
-
-   * [I. Definition](#i-definition)
-      * [Project Overview](#project-overview)
-         * [Existing research](#existing-research)
-         * [Relevance](#relevance)
-         * [Datasets](#datasets)
-      * [Problem Statement](#problem-statement)
-         * [Problem structure](#problem-structure)
-         * [Feature selection](#feature-selection)
-            * [Creation of isolated environment](#creation-of-isolated-environment)
-            * [Baseline and primary learning algorithm implementation](#baseline-and-primary-learning-algorithm-implementation)
-            * [Learning process establishment](#learning-process-establishment)
-            * [Building an application](#building-an-application)
-      * [Metrics](#metrics)
-         * [Profitability](#profitability)
-         * [Accuracy and recall](#accuracy-and-recall)
-   * [II. Analysis](#ii-analysis)
-      * [Data Exploration](#data-exploration)
-      * [Exploratory Visualization](#exploratory-visualization)
-      * [Algorithms and Techniques](#algorithms-and-techniques)
-         * [Q-Learning](#q-learning)
-         * [Deep Q-Learning](#deep-q-learning)
-         * [Benchmark](#benchmark)
-   * [III. Methodology](#iii-methodology)
-      * [Data Preprocessing](#data-preprocessing)
-      * [Implementation](#implementation)
-   * [IV. Results](#iv-results)
-      * [Model Evaluation and Validation](#model-evaluation-and-validation)
-      * [Justification](#justification)
-      * [Demo results](#demo-results)
-   * [V. Conclusion](#v-conclusion)
-      * [Reflection](#reflection)
-      * [Improvement](#improvement)
-
-
-
 [fig1]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/price.png
 [fig2]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/rsi-mfi_medium.png
 [fig3]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/ppo_medium.png
@@ -55,6 +18,8 @@
 [fig8]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/q_sin_medium.png
 [fig9]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/bh_medium.png
 [fig10]: https://raw.githubusercontent.com/fink-stanislav/AutomaticTradingSystem/master/images/demo_profitabilities_medium.png
+
+# Table of contents
 
    * [I. Definition](#i-definition)
       * [Project Overview](#project-overview)
@@ -311,7 +276,7 @@ To calculate profitability that is main performance metric of the project `Estim
 Some abstractions were introduced to organize the code. While they have not the best names they make code more reusable and clean.
 
 #### Time
-Nearly all abstractions described below act periodically and in parallel. To demonstrate their work a decent amount of time is needed. That is why scaling of time was introduced. Number of seconds in one real second can be set in application configuration. In runtime all delays are calculated using this ratio. This approach helps to speed up the processes running in the application and see progress after reasonable amount of time. For reference see `model\_time` module. According to configuration `model\_time` module can be switched to real time scale seamlessly.
+Nearly all abstractions described below act periodically and in parallel. To demonstrate their work a decent amount of time is needed. That is why scaling of time was introduced. Number of seconds in one real second can be set in application configuration. In runtime all delays are calculated using this ratio. This approach helps to speed up the processes running in the application and see progress after reasonable amount of time. For reference see `model_time` module. According to configuration `model_time` module can be switched to real time scale seamlessly.
 
 #### Environments
 Two types of environments coexist in the project. The first environment residing in `environment` module is needed for learning. Its main feature is controllable state transition - it switches to the next state only if needed. When batch learning is running it executes all required learning actions and only after that switches environment to the next state. It guarantees that all states will be processed. The second environment is placed to `demo` module. It is an implementation of exchange client but with mocked order book and balances. While it provides similar functionality like emulating buys and sells, it is closer to real exchange and switches to the next state automatically after a given delay.
@@ -319,7 +284,10 @@ Two types of environments coexist in the project. The first environment residing
 #### Agents
 Implementations of both Q-Learning algorithms are represented as two classes in `agents` module. `QAgent` class contains a q-table in form of dictionary while `DeepQAgent` counterpart contains neural network instead. With all advantages of the neural network mentioned above, it is neither large nor complicated, see Fig. 4. It has two hidden layers of size 24 with RELU activation functions, three input neurons, and three output neurons. Curiously that larger and smaller networks performed worse.
 
-Main differences of these classes are in methods `learn` and `choose\_action`. NN-based agent utilizes backward propagation in order to train its model while table-based one only checks if state is stored in table and updates it if it is and stores it if it is not.
+![Fig. 4. NN][fig4]
+Figure 4. Neural network architecture
+
+Main differences of these classes are in methods `learn` and `choose_action`. NN-based agent utilizes backward propagation in order to train its model while table-based one only checks if state is stored in table and updates it if it is and stores it if it is not.
 
 Every agent has metadata, in other words information about agent itself, and associated model. In context of agent a model is trained neural network for Deep Q-Learning and filled table for Q-Learning. This information is required to be stored in order to be reusable. However agents are not aware of how and where to store it because they should not be responsible for this. This work is delegated to other entities introduced below.
 
